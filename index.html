@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Web Pertanian</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <h1>🌾 Web Pertanian</h1>
+  <p>Catatan modal & panen</p>
+
+  <hr>
+
+  <h2>📊 Ringkasan</h2>
+  <p>Total Modal: Rp <span id="modal">0</span></p>
+  <p>Total Panen: Rp <span id="panen">0</span></p>
+  <p>Laba / Rugi: Rp <span id="laba">0</span></p>
+
+  <hr>
+
+  <h2>🤖 Chatbot</h2>
+  <button onclick="jawab('modal')">Total Modal</button>
+  <button onclick="jawab('panen')">Total Panen</button>
+  <button onclick="jawab('laba')">Laba / Rugi</button>
+
+  <p id="jawaban"></p>
+
+  <script src="script.js"></script>
+</body>
+</html>
