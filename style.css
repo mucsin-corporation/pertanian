@@ -1,0 +1,88 @@
+/* RESET */
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* BODY */
+body {
+  margin: 0;
+  background: #f4f6f8;
+  color: #222;
+}
+
+/* HEADER */
+header {
+  background: #2e7d32;
+  color: white;
+  padding: 16px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* CONTAINER */
+.container {
+  padding: 20px;
+}
+
+/* DASHBOARD CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.card .value {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* STATUS WARNA */
+.untung {
+  color: #2e7d32; /* hijau */
+}
+
+.rugi {
+  color: #c62828; /* merah */
+}
+
+.impas {
+  color: #f9a825; /* kuning */
+}
+
+/* BUTTON */
+button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #2e7d32;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* INPUT */
+input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  margin-bottom: 10px;
+}
