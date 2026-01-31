@@ -3,27 +3,35 @@
 <head>
   <title>Web Pertanian</title>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <h1>🌾 Web Pertanian</h1>
-  <p>Catatan modal & panen</p>
 
-  <hr>
+  <header>
+    🌾 Dashboard Pertanian
+  </header>
 
-  <h2>📊 Ringkasan</h2>
-  <p>Total Modal: Rp <span id="modal">0</span></p>
-  <p>Total Panen: Rp <span id="panen">0</span></p>
-  <p>Laba / Rugi: Rp <span id="laba">0</span></p>
+  <div class="container">
 
-  <hr>
+    <div class="cards">
+      <div class="card">
+        <h3>Modal</h3>
+        <div class="value">Rp 0</div>
+      </div>
 
-  <h2>🤖 Chatbot</h2>
-  <button onclick="jawab('modal')">Total Modal</button>
-  <button onclick="jawab('panen')">Total Panen</button>
-  <button onclick="jawab('laba')">Laba / Rugi</button>
+      <div class="card">
+        <h3>Panen</h3>
+        <div class="value">Rp 0</div>
+      </div>
 
-  <p id="jawaban"></p>
+      <div class="card">
+        <h3>Laba / Rugi</h3>
+        <div class="value impas">Rp 0</div>
+      </div>
+    </div>
 
-  <script src="script.js"></script>
+  </div>
+
 </body>
 </html>
