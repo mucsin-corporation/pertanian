@@ -1,21 +1,35 @@
-let modal = 0;
-let panen = 0;
+const modalInput = document.getElementById("modal");
+const pendapatanInput = document.getElementById("pendapatan");
+const hasilText = document.getElementById("hasilText");
+const selisihText = document.getElementById("selisihText");
+const hasilBox = document.getElementById("hasilBox");
 
-function jawab(tanya) {
-  let laba = panen - modal;
+function hitung() {
+  const modal = Number(modalInput.value);
+  const pendapatan = Number(pendapatanInput.value);
 
-  if (tanya === "modal") {
-    document.getElementById("jawaban").innerText =
-      "Total modal: Rp " + modal;
+  if (!modal || !pendapatan) {
+    hasilText.textContent = "Masukkan angka";
+    selisihText.textContent = "";
+    hasilBox.className = "card hasil";
+    return;
   }
 
-  if (tanya === "panen") {
-    document.getElementById("jawaban").innerText =
-      "Total panen: Rp " + panen;
+  const selisih = pendapatan - modal;
+
+  if (selisih > 0) {
+    hasilText.textContent = "UNTUNG";
+    hasilBox.className = "card hasil untung";
+  } else if (selisih < 0) {
+    hasilText.textContent = "RUGI";
+    hasilBox.className = "card hasil rugi";
+  } else {
+    hasilText.textContent = "IMPAS";
+    hasilBox.className = "card hasil impas";
   }
 
-  if (tanya === "laba") {
-    document.getElementById("jawaban").innerText =
-      "Laba / Rugi: Rp " + laba;
-  }
+  selisihText.textContent = "Selisih: " + selisih;
 }
+
+modalInput.addEventListener("input", hitung);
+pendapatanInput.addEventListener("input", hitung);
