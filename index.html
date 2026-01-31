@@ -1,37 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Web Pertanian</title>
   <meta charset="UTF-8">
+  <title>Dashboard Pertanian</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-  <header>
-    🌾 Dashboard Pertanian
-  </header>
-
   <div class="container">
+    <h1>🌾 Dashboard Pertanian</h1>
 
-    <div class="cards">
-      <div class="card">
-        <h3>Modal</h3>
-        <div class="value">Rp 0</div>
-      </div>
-
-      <div class="card">
-        <h3>Panen</h3>
-        <div class="value">Rp 0</div>
-      </div>
-
-      <div class="card">
-        <h3>Laba / Rugi</h3>
-        <div class="value impas">Rp 0</div>
-      </div>
+    <div class="card">
+      <label>Modal</label>
+      <input type="number" id="modal" placeholder="contoh: 250000">
     </div>
 
+    <div class="card">
+      <label>Pendapatan</label>
+      <input type="number" id="pendapatan" placeholder="contoh: 400000">
+    </div>
+
+    <div class="card hasil" id="hasilBox">
+      <h2 id="hasilText">Masukkan angka</h2>
+      <p id="selisihText"></p>
+    </div>
   </div>
 
+  <script src="script.js"></script>
 </body>
 </html>
