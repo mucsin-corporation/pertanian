@@ -1,47 +1,107 @@
-/* RESET */body {
+:root {
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #000;
+  --sidebar: #2f3e46;
+}
+
+.dark {
+  --bg: #1e1e1e;
+  --card: #2a2a2a;
+  --text: #f5f5f5;
+  --sidebar: #000;
+}
+
+body {
+  margin: 0;
   font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  background: var(--bg);
+  color: var(--text);
 }
 
-.container {
-  max-width: 400px;
-  margin: 50px auto;
+/* LOGIN */
+.login-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-box {
+  background: var(--card);
+  padding: 30px;
+  border-radius: 10px;
+  width: 250px;
+}
+.login-box input, .login-box button {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
 }
 
-h1 {
-  text-align: center;
+/* LAYOUT */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+.hidden { display: none; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 200px;
+  background: var(--sidebar);
+  color: white;
+  padding: 20px;
+}
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+.sidebar li {
+  padding: 10px;
+  background: #52796f;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.theme-btn {
+  width: 100%;
+  padding: 8px;
 }
 
+/* CONTENT */
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+/* CARD */
 .card {
-  background: white;
+  background: var(--card);
   padding: 15px;
   margin-bottom: 15px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-
 input {
   width: 100%;
   padding: 10px;
-  font-size: 16px;
 }
 
-.hasil {
+/* SUMMARY */
+.summary {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.summary-card {
+  flex: 1;
+  background: var(--card);
+  padding: 15px;
+  border-radius: 10px;
   text-align: center;
   font-weight: bold;
 }
 
-.untung {
-  background: #d4edda;
-  color: #155724;
-}
-
-.rugi {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-.impas {
-  background: #fff3cd;
-  color: #856404;
-}
+/* HASIL */
+.untung { background: #d4edda; color: #155724; }
+.rugi { background: #f8d7da; color: #721c24; }
+.impas { background: #fff3cd; color: #856404; }
