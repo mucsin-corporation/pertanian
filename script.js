@@ -1,85 +1,111 @@
-/* ===== USERS ===== */
+/* ===== USER & ROLE ===== */
 let users = JSON.parse(localStorage.getItem("users")) || {
-  owner:{password:"Fall1244", role:"owner"},
-  admin:{password:"Atmin12344", role:"admin"}
+  owner:{password:"Fall1244",role:"owner"},
+  admin:{password:"Atmin12344",role:"admin"}
 };
-let role=null,currentProduct=null;
+let currentUserRole = null;
+let currentProduk = null;
 
-/* ===== UTIL ===== */
-const $=id=>document.getElementById(id);
-const fmt=n=>n.toLocaleString("id-ID");
-const clean=v=>Number((v||"").toString().replace(/\./g,""));
-const now=()=>new Date().toLocaleString("id-ID");
+/* ===== DATABASE ===== */
+let db = JSON.parse(localStorage.getItem("db")) || {
+  produk:{},
+  log:[]
+};
 
-/* ===== AUTH ===== */
+const $ = id => document.getElementById(id);
+const saveDB = ()=> localStorage.setItem("db",JSON.stringify(db));
+const now = ()=> new Date().toLocaleString("id-ID");
+
+/* ===== LOGIN ===== */
 function login(){
-  const u=username.value,p=password.value;
-  if(users[u]&&users[u].password===p){
-    role=users[u].role;
+  const u = loginUser.value;
+  const p = loginPass.value;
+  if(users[u] && users[u].password === p){
+    currentUserRole = users[u].role;
     loginPage.classList.add("hidden");
     app.classList.remove("hidden");
     init();
-  }else loginMsg.textContent="Login gagal";
+  }else{
+    loginMsg.textContent = "Login gagal";
+  }
 }
-function logout(){location.reload()}
-
-/* ===== THEME ===== */
-function toggleTheme(){
-  document.body.classList.toggle("dark");
-}
-
-/* ===== DB ===== */
-function db(){return JSON.parse(localStorage.getItem("db")||'{"products":{},"logs":[]}')}
-function saveDB(d){localStorage.setItem("db",JSON.stringify(d))}
+function logout(){location.reload();}
 
 /* ===== INIT ===== */
 function init(){
-  renderProducts();renderAdmins();renderLogs();calc();
+  renderProduk();
+  renderAdmin();
+  renderLog();
+  hitungDashboard();
 }
 
 /* ===== PRODUK ===== */
-function addProduct(){
-  if(role!=="owner") return alert("Owner saja");
-  const name=prompt("Nama produk?");
-  if(!name)return;
-  const d=db(),id="p"+Date.now();
-  d.products[id]={name,modal:0,pend:0};
-  d.logs.unshift(`[${now()}] owner tambah produk ${name}`);
-  saveDB(d);renderProducts();
+function tambahProduk(){
+  if(currentUserRole!=="owner") return alert("Owner saja");
+  const nama = prompt("Nama produk?");
+  if(!nama) return;
+  const id = "p"+Date.now();
+  db.produk[id]={nama,modal:0,pendapatan:0};
+  db.log.unshift(`[${now()}] Owner tambah produk ${nama}`);
+  saveDB();
+  renderProduk();
 }
-function renderProducts(){
-  const d=db(),s=productSelect;
-  s.innerHTML="";
-  Object.keys(d.products).forEach(id=>{
+function renderProduk(){
+  produkSelect.innerHTML="";
+  Object.keys(db.produk).forEach(id=>{
     const o=document.createElement("option");
-    o.value=id;o.textContent=d.products[id].name;s.appendChild(o);
+    o.value=id;o.textContent=db.produk[id].nama;
+    produkSelect.appendChild(o);
   });
-  currentProduct=s.value;loadProduct();
+  currentProduk = produkSelect.value;
+  loadProduk();
 }
-function loadProduct(){
-  const p=db().products[currentProduct];
-  if(!p)return;
-  productName.value=p.name;
-  modal.value=fmt(p.modal);
-  pendapatan.value=fmt(p.pend);
+function loadProduk(){
+  if(!currentProduk) return;
+  const p=db.produk[currentProduk];
+  namaProduk.value=p.nama;
+  modal.value=format(p.modal);
+  pendapatan.value=format(p.pendapatan);
 }
-function saveTx(){
-  const d=db(),p=d.products[currentProduct];
-  if(role==="owner") p.name=productName.value;
+function simpanData(){
+  const p=db.produk[currentProduk];
+  if(currentUserRole==="owner") p.nama=namaProduk.value;
   p.modal=clean(modal.value);
-  p.pend=clean(pendapatan.value);
-  d.logs.unshift(`[${now()}] ${role} transaksi ${p.name}: ${note.value}`);
-  saveDB(d);calc();renderLogs();
+  p.pendapatan=clean(pendapatan.value);
+  db.log.unshift(`[${now()}] ${currentUserRole} input data ${p.nama}: ${catatan.value}`);
+  saveDB();
+  hitungStatus(p);
+  hitungDashboard();
+  renderLog();
+}
+
+/* ===== HITUNG ===== */
+function clean(v){return Number(v.replace(/\./g,""))||0}
+function format(n){return n.toLocaleString("id-ID")}
+function hitungStatus(p){
+  const s = p.pendapatan - p.modal;
+  statusBox.className="";
+  if(s>0){statusBox.classList.add("untung");statusBox.textContent="UNTUNG";}
+  else if(s<0){statusBox.classList.add("rugi");statusBox.textContent="RUGI";}
+  else{statusBox.classList.add("impas");statusBox.textContent="IMPAS";}
+}
+function hitungDashboard(){
+  let m=0,p=0;
+  Object.values(db.produk).forEach(x=>{m+=x.modal;p+=x.pendapatan});
+  tModal.textContent=format(m);
+  tPendapatan.textContent=format(p);
+  const s=p-m;
+  tHasil.textContent=s>0?"UNTUNG":s<0?"RUGI":"IMPAS";
 }
 
 /* ===== ADMIN ===== */
-function addAdmin(){
-  if(role!=="owner")return;
-  users[newAdmin.value]={password:newPass.value,role:"admin"};
+function tambahAdmin(){
+  if(currentUserRole!=="owner") return;
+  users[adminUser.value]={password:adminPass.value,role:"admin"};
   localStorage.setItem("users",JSON.stringify(users));
-  renderAdmins();
+  renderAdmin();
 }
-function renderAdmins(){
+function renderAdmin(){
   adminList.innerHTML="";
   Object.keys(users).forEach(u=>{
     if(users[u].role==="admin"){
@@ -90,23 +116,16 @@ function renderAdmins(){
   });
 }
 
-/* ===== CALC ===== */
-function calc(){
-  const d=db();let sm=0,sp=0;
-  Object.values(d.products).forEach(p=>{sm+=p.modal;sp+=p.pend});
-  sumModal.textContent=fmt(sm);
-  sumPendapatan.textContent=fmt(sp);
-  const s=sp-sm;
-  sumHasil.textContent=s>0?"UNTUNG":s<0?"RUGI":"IMPAS";
-}
-
 /* ===== LOG ===== */
-function renderLogs(){
-  logList.innerHTML=db().logs.map(l=>`<div>${l}</div>`).join("");
+function renderLog(){
+  logList.innerHTML=db.log.map(l=>`<div>${l}</div>`).join("");
 }
 
-/* ===== NAV ===== */
-function show(id){
-  ["dashboard","products","admins","logs"].forEach(s=>$(s).classList.add("hidden"));
+/* ===== UI ===== */
+function showPage(id){
+  ["dashboard","produk","admin","log"].forEach(p=>$(p).classList.add("hidden"));
   $(id).classList.remove("hidden");
+}
+function toggleTheme(){
+  document.body.classList.toggle("dark");
 }
