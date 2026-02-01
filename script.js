@@ -1,97 +1,112 @@
-// DEMO USER
-const users = {
-  owner: { password: "Fall1244", role: "owner" },
-  admin: { password: "Atmin12344", role: "admin" }
+/* ===== USERS ===== */
+let users = JSON.parse(localStorage.getItem("users")) || {
+  owner:{password:"Fall1244", role:"owner"},
+  admin:{password:"Atmin12344", role:"admin"}
 };
+let role=null,currentProduct=null;
 
-let currentUser = null;
+/* ===== UTIL ===== */
+const $=id=>document.getElementById(id);
+const fmt=n=>n.toLocaleString("id-ID");
+const clean=v=>Number((v||"").toString().replace(/\./g,""));
+const now=()=>new Date().toLocaleString("id-ID");
 
-// LOGIN
-function login() {
-  const u = username.value;
-  const p = password.value;
-
-  if (users[u] && users[u].password === p) {
-    currentUser = users[u].role;
+/* ===== AUTH ===== */
+function login(){
+  const u=username.value,p=password.value;
+  if(users[u]&&users[u].password===p){
+    role=users[u].role;
     loginPage.classList.add("hidden");
     app.classList.remove("hidden");
-    localStorage.setItem("role", currentUser);
-  } else {
-    loginMsg.textContent = "Login gagal";
-  }
+    init();
+  }else loginMsg.textContent="Login gagal";
 }
+function logout(){location.reload()}
 
-function logout() {
-  localStorage.clear();
-  location.reload();
-}
-
-// THEME
-function toggleTheme() {
+/* ===== THEME ===== */
+function toggleTheme(){
   document.body.classList.toggle("dark");
-  localStorage.setItem("theme",
-    document.body.classList.contains("dark") ? "dark" : "light"
-  );
 }
 
-// FORMAT
-function format(n) {
-  return n.toLocaleString("id-ID");
-}
-function clean(v) {
-  return Number(v.replace(/\./g, ""));
-}
+/* ===== DB ===== */
+function db(){return JSON.parse(localStorage.getItem("db")||'{"products":{},"logs":[]}')}
+function saveDB(d){localStorage.setItem("db",JSON.stringify(d))}
 
-// ELEMENT
-const modalInput = document.getElementById("modal");
-const pendapatanInput = document.getElementById("pendapatan");
-
-// LOAD
-window.onload = () => {
-  if (localStorage.getItem("theme") === "dark")
-    document.body.classList.add("dark");
-
-  const m = localStorage.getItem("modal");
-  const p = localStorage.getItem("pendapatan");
-
-  if (m) modalInput.value = format(Number(m));
-  if (p) pendapatanInput.value = format(Number(p));
-
-  hitung();
-};
-
-function hitung() {
-  const modal = clean(modalInput.value || "0");
-  const pendapatan = clean(pendapatanInput.value || "0");
-
-  localStorage.setItem("modal", modal);
-  localStorage.setItem("pendapatan", pendapatan);
-
-  totalModal.textContent = format(modal);
-  totalPendapatan.textContent = format(pendapatan);
-
-  const sel = pendapatan - modal;
-
-  if (sel > 0) {
-    totalHasil.textContent = "UNTUNG";
-    hasilBox.className = "card hasil untung";
-  } else if (sel < 0) {
-    totalHasil.textContent = "RUGI";
-    hasilBox.className = "card hasil rugi";
-  } else {
-    totalHasil.textContent = "IMPAS";
-    hasilBox.className = "card hasil impas";
-  }
-
-  hasilText.textContent = totalHasil.textContent;
-  selisihText.textContent = "Selisih: " + format(Math.abs(sel));
+/* ===== INIT ===== */
+function init(){
+  renderProducts();renderAdmins();renderLogs();calc();
 }
 
-function handleInput(e) {
-  const v = clean(e.target.value || "0");
-  e.target.value = v ? format(v) : "";
-  hitung();
+/* ===== PRODUK ===== */
+function addProduct(){
+  if(role!=="owner") return alert("Owner saja");
+  const name=prompt("Nama produk?");
+  if(!name)return;
+  const d=db(),id="p"+Date.now();
+  d.products[id]={name,modal:0,pend:0};
+  d.logs.unshift(`[${now()}] owner tambah produk ${name}`);
+  saveDB(d);renderProducts();
+}
+function renderProducts(){
+  const d=db(),s=productSelect;
+  s.innerHTML="";
+  Object.keys(d.products).forEach(id=>{
+    const o=document.createElement("option");
+    o.value=id;o.textContent=d.products[id].name;s.appendChild(o);
+  });
+  currentProduct=s.value;loadProduct();
+}
+function loadProduct(){
+  const p=db().products[currentProduct];
+  if(!p)return;
+  productName.value=p.name;
+  modal.value=fmt(p.modal);
+  pendapatan.value=fmt(p.pend);
+}
+function saveTx(){
+  const d=db(),p=d.products[currentProduct];
+  if(role==="owner") p.name=productName.value;
+  p.modal=clean(modal.value);
+  p.pend=clean(pendapatan.value);
+  d.logs.unshift(`[${now()}] ${role} transaksi ${p.name}: ${note.value}`);
+  saveDB(d);calc();renderLogs();
 }
 
-modalInput.addEventListener("input", handleInput);
-pendapatanInput.addEventListener("input", handleInput);
+/* ===== ADMIN ===== */
+function addAdmin(){
+  if(role!=="owner")return;
+  users[newAdmin.value]={password:newPass.value,role:"admin"};
+  localStorage.setItem("users",JSON.stringify(users));
+  renderAdmins();
+}
+function renderAdmins(){
+  adminList.innerHTML="";
+  Object.keys(users).forEach(u=>{
+    if(users[u].role==="admin"){
+      const d=document.createElement("div");
+      d.textContent=u;
+      adminList.appendChild(d);
+    }
+  });
+}
+
+/* ===== CALC ===== */
+function calc(){
+  const d=db();let sm=0,sp=0;
+  Object.values(d.products).forEach(p=>{sm+=p.modal;sp+=p.pend});
+  sumModal.textContent=fmt(sm);
+  sumPendapatan.textContent=fmt(sp);
+  const s=sp-sm;
+  sumHasil.textContent=s>0?"UNTUNG":s<0?"RUGI":"IMPAS";
+}
+
+/* ===== LOG ===== */
+function renderLogs(){
+  logList.innerHTML=db().logs.map(l=>`<div>${l}</div>`).join("");
+}
+
+/* ===== NAV ===== */
+function show(id){
+  ["dashboard","products","admins","logs"].forEach(s=>$(s).classList.add("hidden"));
+  $(id).classList.remove("hidden");
+}
