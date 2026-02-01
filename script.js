@@ -4,9 +4,24 @@ const hasilText = document.getElementById("hasilText");
 const selisihText = document.getElementById("selisihText");
 const hasilBox = document.getElementById("hasilBox");
 
+// ambil data tersimpan
+window.onload = function () {
+  const modalSaved = localStorage.getItem("modal");
+  const pendapatanSaved = localStorage.getItem("pendapatan");
+
+  if (modalSaved) modalInput.value = modalSaved;
+  if (pendapatanSaved) pendapatanInput.value = pendapatanSaved;
+
+  hitung();
+};
+
 function hitung() {
   const modal = Number(modalInput.value);
   const pendapatan = Number(pendapatanInput.value);
+
+  // simpan ke localStorage
+  localStorage.setItem("modal", modalInput.value);
+  localStorage.setItem("pendapatan", pendapatanInput.value);
 
   if (!modal || !pendapatan) {
     hasilText.textContent = "Masukkan angka";
