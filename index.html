@@ -7,17 +7,47 @@
 </head>
 <body>
 
-  <div class="container">
-    <h1>🌾 Dashboard Pertanian</h1>
+<!-- LOGIN -->
+<div id="loginPage" class="login-page">
+  <div class="login-box">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Masuk</button>
+    <p id="loginMsg"></p>
+  </div>
+</div>
 
+<!-- APP -->
+<div id="app" class="layout hidden">
+  <div class="sidebar">
+    <h2>🌾 Admin</h2>
+    <ul>
+      <li class="active">Dashboard</li>
+      <li onclick="logout()">Logout</li>
+    </ul>
+    <button class="theme-btn" onclick="toggleTheme()">🌙 / ☀️</button>
+  </div>
+
+  <div class="content">
+    <h1>Dashboard Pertanian</h1>
+
+    <!-- RINGKASAN -->
+    <div class="summary">
+      <div class="summary-card">Total Modal<br><span id="totalModal">0</span></div>
+      <div class="summary-card">Total Pendapatan<br><span id="totalPendapatan">0</span></div>
+      <div class="summary-card">Hasil<br><span id="totalHasil">-</span></div>
+    </div>
+
+    <!-- INPUT -->
     <div class="card">
       <label>Modal</label>
-      <input type="number" id="modal" placeholder="contoh: 250000">
+      <input type="text" id="modal">
     </div>
 
     <div class="card">
       <label>Pendapatan</label>
-      <input type="number" id="pendapatan" placeholder="contoh: 400000">
+      <input type="text" id="pendapatan">
     </div>
 
     <div class="card hasil" id="hasilBox">
@@ -25,7 +55,8 @@
       <p id="selisihText"></p>
     </div>
   </div>
+</div>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
